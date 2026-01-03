@@ -55,12 +55,10 @@ h3 {
 }
 
 p.desc {
-  font-family: 'Outfit', sans-serif;
-  font-size: 1.15rem;
-  line-height: 1.6;
-  color: var(--text-secondary);
-  max-width: 480px;
-  font-weight: 300;
+  color: #ffffff; /* Putih bersih */
+  font-weight: 600; /* Lebih tebal lagi */
+  text-shadow: 0 1px 3px rgba(0,0,0,0.3); /* Kasih bayangan dikit biar makin pop */
+  /* Sisanya biarin... */
 }
 
 /* Helper Class */
