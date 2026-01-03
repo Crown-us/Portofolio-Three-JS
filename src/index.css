@@ -1,0 +1,171 @@
+/* Import Font: Space Grotesk (Tech) & Outfit (Clean) */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
+
+:root {
+  --bg-color: #ffffff;       /* Putih Bersih */
+  --text-primary: #1a1a1a;   /* Hitam Hampir Pekat */
+  --text-secondary: #666666; /* Abu Medium */
+  --accent-pink: #ff0055;    /* Pink Fanta */
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body, html, #root {
+  width: 100%;
+  height: 100%;
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  font-family: 'Outfit', sans-serif;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* === TYPOGRAPHY MODERN === */
+h1 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 5.5rem;
+  line-height: 1;
+  letter-spacing: -2.5px;
+  margin-bottom: 20px;
+  color: var(--text-primary);
+}
+
+h2 {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  font-size: 3rem;
+  margin-bottom: 1.5rem;
+  letter-spacing: -1.5px;
+  color: var(--text-primary);
+}
+
+h3 {
+  font-family: 'Outfit', sans-serif;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  font-weight: 600;
+  color: var(--accent-pink);
+  margin-bottom: 1rem;
+}
+
+p.desc {
+  font-family: 'Outfit', sans-serif;
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: var(--text-secondary);
+  max-width: 480px;
+  font-weight: 300;
+}
+
+/* Helper Class */
+.text-pink { color: var(--accent-pink); }
+
+/* === NAVBAR FIXED === */
+.nav-fixed {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  padding: 25px 50px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  z-index: 100;
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border-bottom: 1px solid rgba(0,0,0,0.05);
+}
+
+.logo {
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 700;
+  font-size: 1.4rem;
+  color: var(--text-primary);
+  text-decoration: none;
+  letter-spacing: -1px;
+}
+
+.nav-links {
+  display: flex;
+  gap: 30px;
+}
+
+.nav-item {
+  color: var(--text-primary);
+  text-decoration: none;
+  font-weight: 500;
+  font-size: 0.95rem;
+  transition: color 0.2s;
+}
+
+.nav-item:hover {
+  color: var(--accent-pink);
+}
+
+/* === PROJECT LIST (Minimalist) === */
+.project-row {
+  border-bottom: 1px solid #e5e5e5;
+  padding: 35px 0;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+.project-row:hover {
+  padding-left: 15px;
+  border-bottom-color: var(--accent-pink);
+}
+
+/* BAGIAN YANG TADI ERROR ADA DISINI */
+.p-title {
+  font-family: 'Space Grotesk', sans-serif; /* Pastikan ada titik dua (:) dan titik koma (;) */
+  font-size: 2.2rem;
+  font-weight: 500;
+  letter-spacing: -1px;
+}
+
+.p-cat {
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: var(--text-secondary);
+  background: #f4f4f4;
+  padding: 6px 12px;
+  border-radius: 6px;
+}
+
+/* === BUTTON MODERN === */
+.btn-modern {
+  margin-top: 30px;
+  padding: 16px 32px;
+  background: var(--text-primary);
+  color: white;
+  border: none;
+  border-radius: 8px;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 500;
+  letter-spacing: 0.5px;
+  cursor: pointer;
+  transition: 0.3s;
+}
+
+.btn-modern:hover {
+  background: var(--accent-pink);
+  transform: translateY(-2px);
+  box-shadow: 0 10px 25px rgba(255, 0, 85, 0.25);
+}
+
+/* Responsif Mobile */
+@media (max-width: 768px) {
+  h1 { font-size: 3.5rem; }
+  .nav-fixed { padding: 20px; }
+  .nav-links { display: none; }
+}
