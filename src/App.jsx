@@ -58,7 +58,7 @@ const Nav = () => (
   </nav>
 )
 
-// Tambahin komponen baru buat Tech Stack Marquee (Logo Jalan)
+// === 3. COMPONENT TAMBAHAN (MARQUEE & LAYOUT) ===
 const TechMarquee = () => (
   <div style={{ 
     width: '100%', overflow: 'hidden', padding: '40px 0', 
@@ -68,7 +68,7 @@ const TechMarquee = () => (
       display: 'flex', gap: '50px', whiteSpace: 'nowrap', 
       animation: 'marquee 20s linear infinite', opacity: 0.6 
     }}>
-      {/* Ulangi ini 2-3 kali biar loop halus */}
+      {/* Loop Text Manual */}
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>REACT</span>
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>NEXT.JS</span>
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>THREE.JS</span>
@@ -77,7 +77,8 @@ const TechMarquee = () => (
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>PYTHON</span>
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>ARDUINO</span>
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>MONGODB</span>
-       {/* Copy lagi buat loop */}
+      
+      {/* Copy lagi buat seamless loop */}
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>REACT</span>
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>NEXT.JS</span>
       <span style={{fontSize: '1.5rem', fontWeight: 'bold'}}>THREE.JS</span>
@@ -89,14 +90,12 @@ const TechMarquee = () => (
   </div>
 )
 
-// === 3. LAYOUT WRAPPER ===
 const Section = ({ children, align = 'left' }) => (
   <section style={{
     height: '100vh', 
     width: '100vw', 
     display: 'flex', 
     alignItems: 'center',
-    // Logic: Konten rata kiri atau kanan
     justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
     padding: '0 10%', 
     position: 'relative'
@@ -105,14 +104,21 @@ const Section = ({ children, align = 'left' }) => (
   </section>
 )
 
+// === 4. MAIN APP (CUMA SATU) ===
 export default function App() {
   return (
     <>
       <Nav />
       
       <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 35 }}>
-        {/* ... (Lighting & Environment biarin sama) ... */}
-        {/* ... (ScrollControls ganti pages jadi 6 karena nambah konten) ... */}
+        
+        {/* LIGHTING & ENVIRONMENT */}
+        <ambientLight intensity={0.5} />
+        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={5} />
+        <spotLight position={[-10, -5, -5]} intensity={5} color="#ffccdd" />
+        <Environment preset="city" /> 
+
+        {/* CONTROLS: Pages = 6 karena konten kamu panjang */}
         <ScrollControls pages={6} damping={0.2}>
           
           <PinkGlass />
@@ -120,7 +126,7 @@ export default function App() {
 
           <Scroll html style={{ width: '100%' }}>
             
-            {/* PAGE 1: HERO (Tetap) */}
+            {/* PAGE 1: HERO */}
             <Section align="left">
               <h3>2025 Portfolio</h3>
               <h1>Fullstack<br/><span className="text-pink">Creative.</span></h1>
@@ -130,12 +136,12 @@ export default function App() {
               <button className="btn-modern">EXPLORE WORK</button>
             </Section>
 
-            {/* BARU: TECH MARQUEE (Di antara Hero & About) */}
+            {/* MARQUEE JALAN (Positioned Absolute) */}
             <div style={{ position: 'absolute', top: '100vh', width: '100%' }}>
                <TechMarquee />
             </div>
 
-            {/* PAGE 2: ABOUT (Tetap) */}
+            {/* PAGE 2: ABOUT */}
             <Section align="right">
               <h3>The Developer</h3>
               <h2>Code driven by <br/><span className="text-pink">Design.</span></h2>
@@ -145,7 +151,7 @@ export default function App() {
               </p>
             </Section>
 
-            {/* BARU: SERVICES (Apa yang bisa lo kerjain) */}
+            {/* PAGE 3: SERVICES */}
             <Section align="left">
               <h3>What I Do</h3>
               <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '30px', marginTop: '20px' }}>
@@ -168,8 +174,8 @@ export default function App() {
               </div>
             </Section>
 
-            {/* PAGE 4: PROJECT LIST (Tetap) */}
-            <Section align="right"> {/* Pindah ke Kanan biar variasi */}
+            {/* PAGE 4: PROJECT LIST */}
+            <Section align="right">
               <h3>Selected Works</h3>
               <div style={{ width: '100%', marginTop: '30px' }}>
                 <div className="project-row">
@@ -187,7 +193,7 @@ export default function App() {
               </div>
             </Section>
 
-            {/* PAGE 5: EXPERIENCE (Timeline) */}
+            {/* PAGE 5: EXPERIENCE */}
             <Section align="left">
                <h3>Experience</h3>
                <div style={{ marginTop: '20px', borderLeft: '2px solid #eee', paddingLeft: '30px' }}>
@@ -209,7 +215,7 @@ export default function App() {
                </div>
             </Section>
 
-            {/* PAGE 6: CONTACT (Tetap) */}
+            {/* PAGE 6: CONTACT */}
             <Section align="left">
               <h3>Collaboration</h3>
               <h1 style={{fontSize: '4.5rem'}}>Let's build<br/>Future.</h1>
@@ -230,128 +236,7 @@ export default function App() {
           </Scroll>
         </ScrollControls>
         
-        {/* Post Processing... */}
-        <EffectComposer disableNormalPass>
-          <Bloom luminanceThreshold={0.9} mipmapBlur intensity={0.4} radius={0.5} />
-          <Noise opacity={0.02} />
-        </EffectComposer>
-
-      </Canvas>
-    </>
-  )
-}
-
-// === 4. MAIN APP ===
-export default function App() {
-  return (
-    <>
-      {/* Navbar Fixed di atas */}
-      <Nav />
-      
-      <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 35 }}>
-        
-        {/* LIGHTING: Clean Studio Look */}
-        <ambientLight intensity={0.5} />
-        {/* Lampu Utama */}
-        <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={5} />
-        {/* Lampu Fill Pink Pudar dari bawah */}
-        <spotLight position={[-10, -5, -5]} intensity={5} color="#ffccdd" />
-        
-        {/* Environment: Penting agar kaca memantulkan bayangan kota */}
-        <Environment preset="city" /> 
-
-        <ScrollControls pages={4} damping={0.2}>
-          
-          {/* Objek 3D */}
-          <PinkGlass />
-          
-          {/* Bayangan Pink Pudar di Bawah */}
-          <ContactShadows position={[0, -2, 0]} opacity={0.5} scale={10} blur={2} far={4} color="#ff0055" />
-
-          <Scroll html style={{ width: '100%' }}>
-            
-            {/* PAGE 1: HERO */}
-            <Section align="left">
-              <h3>2025 Portfolio</h3>
-              <h1>Fullstack<br/><span className="text-pink">Creative.</span></h1>
-              <p className="desc">
-                Saya Kevin Wijaya. Menggabungkan logika teknis dengan estetika visual untuk membangun web experience yang modern.
-              </p>
-              <button className="btn-modern">EXPLORE WORK</button>
-            </Section>
-
-            {/* PAGE 2: ABOUT */}
-            <Section align="right">
-              <h3>The Developer</h3>
-              <h2>Code driven by <br/><span className="text-pink">Design.</span></h2>
-              <p className="desc">
-                Mahasiswa IT Semester 5. Spesialisasi saya menjembatani gap antara 
-                <strong> Hardware (IoT)</strong> dan <strong>Interface (Web)</strong>.
-                Fokus pada performa, skalabilitas, dan interaksi mikro.
-              </p>
-            </Section>
-
-            {/* PAGE 3: PROJECT LIST */}
-            <Section align="left">
-              <h3>Selected Works</h3>
-              <div style={{ width: '100%', marginTop: '30px' }}>
-                
-                {/* Project 1 */}
-                <div className="project-row">
-                  <div>
-                    <div className="p-title">Glass Portfolio</div>
-                    <div style={{color:'#888', marginTop:'5px', fontSize:'0.9rem'}}>React Three Fiber</div>
-                  </div>
-                  <div className="p-cat">WEBGL</div>
-                </div>
-
-                {/* Project 2 */}
-                <div className="project-row">
-                  <div>
-                    <div className="p-title">Smart Home Hub</div>
-                    <div style={{color:'#888', marginTop:'5px', fontSize:'0.9rem'}}>ESP32 & Next.js</div>
-                  </div>
-                  <div className="p-cat">IOT</div>
-                </div>
-
-                {/* Project 3 */}
-                <div className="project-row">
-                  <div>
-                    <div className="p-title">DeFi Dashboard</div>
-                    <div style={{color:'#888', marginTop:'5px', fontSize:'0.9rem'}}>Blockchain API</div>
-                  </div>
-                  <div className="p-cat">WEB3</div>
-                </div>
-
-              </div>
-            </Section>
-
-            {/* PAGE 4: CONTACT */}
-            <Section align="left">
-              <h3>Collaboration</h3>
-              <h1 style={{fontSize: '4.5rem'}}>Let's build<br/>Future.</h1>
-              <a href="mailto:kevindowi@gmail.com" style={{
-                fontSize: '1.5rem', 
-                color: '#111', 
-                textDecoration: 'none', 
-                borderBottom: '2px solid #ff0055', 
-                fontWeight: '600',
-                fontFamily: 'Space Grotesk, sans-serif'
-              }}>
-                kevindowi@gmail.com
-              </a>
-              
-              <div style={{marginTop: '50px', display: 'flex', gap: '30px'}}>
-                 <a href="#" style={{color: '#666', textDecoration:'none', fontWeight:'500'}}>GitHub</a>
-                 <a href="#" style={{color: '#666', textDecoration:'none', fontWeight:'500'}}>LinkedIn</a>
-                 <a href="#" style={{color: '#666', textDecoration:'none', fontWeight:'500'}}>Instagram</a>
-              </div>
-            </Section>
-
-          </Scroll>
-        </ScrollControls>
-
-        {/* POST PROCESSING: Sedikit Glow & Noise Halus */}
+        {/* Post Processing */}
         <EffectComposer disableNormalPass>
           <Bloom luminanceThreshold={0.9} mipmapBlur intensity={0.4} radius={0.5} />
           <Noise opacity={0.02} />
