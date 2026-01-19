@@ -1,11 +1,36 @@
-/* Import Font: Space Grotesk (Tech) & Outfit (Clean) */
+/* Import Font */
 @import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600&family=Space+Grotesk:wght@500;700&display=swap');
 
+/* === 1. DEFINISI WARNA (VARIABLE) === */
 :root {
-  --bg-color: #ffffff;       /* Putih Bersih */
-  --text-primary: #1a1a1a;   /* Hitam Hampir Pekat */
-  --text-secondary: #666666; /* Abu Medium */
-  --accent-pink: #ff0055;    /* Pink Fanta */
+  /* -- TEMA SIANG (DEFAULT) -- */
+  --bg-color: #ffffff;
+  --text-primary: #1a1a1a;
+  --text-secondary: #666666;
+  --accent-pink: #ff0055;
+  
+  /* Komponen */
+  --glass-bg: rgba(255, 255, 255, 0.75); /* Latar kotak kaca */
+  --glass-border: rgba(0,0,0,0.05);
+  --glass-text: #000000;
+  --nav-bg: rgba(255, 255, 255, 0.85);
+  --border-line: #e5e5e5;
+  --tag-bg: #f4f4f4;
+}
+
+/* -- TEMA MALAM (OVERRIDE) -- */
+body.dark-mode {
+  --bg-color: #0a0a0a;         /* Hitam pekat */
+  --text-primary: #eeeeee;     /* Putih */
+  --text-secondary: #aaaaaa;   /* Abu terang */
+  
+  /* Komponen Malam */
+  --glass-bg: rgba(20, 20, 20, 0.7); /* Kaca Gelap */
+  --glass-border: rgba(255,255,255,0.1);
+  --glass-text: #eeeeee;
+  --nav-bg: rgba(20, 20, 20, 0.85);
+  --border-line: #333333;
+  --tag-bg: #222222;
 }
 
 * {
@@ -22,6 +47,9 @@ body, html, #root {
   font-family: 'Outfit', sans-serif;
   overflow: hidden;
   -webkit-font-smoothing: antialiased;
+  
+  /* PENTING: Transisi halus pas ganti tema */
+  transition: background-color 0.5s ease, color 0.5s ease;
 }
 
 /* === TYPOGRAPHY MODERN === */
@@ -60,18 +88,19 @@ p.desc {
   line-height: 1.6;
   max-width: 500px;
   
-  /* GAYA KOTAK KACA */
-  background: rgba(255, 255, 255, 0.75); /* Latar putih 75% transparan */
-  backdrop-filter: blur(8px);            /* Efek buram di belakang teks */
-  padding: 20px;                         /* Ruang napas di dalam kotak */
-  border-radius: 12px;                   /* Sudut membulat */
-  border: 1px solid rgba(0,0,0,0.05);    /* Garis tipis banget */
+  /* GAYA KOTAK KACA (DINAMIS) */
+  background: var(--glass-bg);        /* Ikut Variable */
+  border: 1px solid var(--glass-border);
+  color: var(--glass-text);
   
-  /* TEKS */
-  color: #000000;    /* Hitam pekat */
-  font-weight: 500;  /* Tebal sedang */
+  backdrop-filter: blur(8px);
+  padding: 20px;
+  border-radius: 12px;
+  font-weight: 500;
   margin-top: 20px;
-  box-shadow: 0 4px 20px rgba(0,0,0,0.05); /* Bayangan halus biar ngambang */
+  box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+  
+  transition: background 0.5s ease, color 0.5s ease;
 }
 
 /* Helper Class */
@@ -88,9 +117,12 @@ p.desc {
   justify-content: space-between;
   align-items: center;
   z-index: 100;
-  background: rgba(255, 255, 255, 0.85);
+  
+  /* Background Dinamis */
+  background: var(--nav-bg); 
   backdrop-filter: blur(12px);
-  border-bottom: 1px solid rgba(0,0,0,0.05);
+  border-bottom: 1px solid var(--glass-border);
+  transition: background 0.5s ease, border-color 0.5s ease;
 }
 
 .logo {
@@ -105,6 +137,7 @@ p.desc {
 .nav-links {
   display: flex;
   gap: 30px;
+  align-items: center; /* Biar tombol sejajar sama menu */
 }
 
 .nav-item {
@@ -119,9 +152,30 @@ p.desc {
   color: var(--accent-pink);
 }
 
-/* === PROJECT LIST (Minimalist) === */
+/* === TOMBOL DARK MODE === */
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--border-line);
+  color: var(--text-primary);
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Bunder */
+  font-size: 1.2rem;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: all 0.3s ease;
+}
+
+.theme-toggle-btn:hover {
+  border-color: var(--accent-pink);
+  transform: rotate(15deg); /* Efek muter dikit pas di hover */
+}
+
+/* === PROJECT LIST === */
 .project-row {
-  border-bottom: 1px solid #e5e5e5;
+  border-bottom: 1px solid var(--border-line); /* Garis pemisah ikut tema */
   padding: 35px 0;
   display: flex;
   justify-content: space-between;
@@ -135,12 +189,12 @@ p.desc {
   border-bottom-color: var(--accent-pink);
 }
 
-/* BAGIAN YANG TADI ERROR ADA DISINI */
 .p-title {
-  font-family: 'Space Grotesk', sans-serif; /* Pastikan ada titik dua (:) dan titik koma (;) */
+  font-family: 'Space Grotesk', sans-serif;
   font-size: 2.2rem;
   font-weight: 500;
   letter-spacing: -1px;
+  color: var(--text-primary);
 }
 
 .p-cat {
@@ -148,17 +202,18 @@ p.desc {
   text-transform: uppercase;
   letter-spacing: 1px;
   color: var(--text-secondary);
-  background: #f4f4f4;
+  background: var(--tag-bg); /* Background tag ikut tema */
   padding: 6px 12px;
   border-radius: 6px;
+  border: 1px solid var(--glass-border);
 }
 
 /* === BUTTON MODERN === */
 .btn-modern {
   margin-top: 30px;
   padding: 16px 32px;
-  background: var(--text-primary);
-  color: white;
+  background: var(--text-primary); /* Tombol jadi putih di dark mode */
+  color: var(--bg-color);          /* Teks tombol jadi hitam di dark mode */
   border: none;
   border-radius: 8px;
   font-family: 'Space Grotesk', sans-serif;
@@ -170,6 +225,7 @@ p.desc {
 
 .btn-modern:hover {
   background: var(--accent-pink);
+  color: white;
   transform: translateY(-2px);
   box-shadow: 0 10px 25px rgba(255, 0, 85, 0.25);
 }
@@ -178,5 +234,12 @@ p.desc {
 @media (max-width: 768px) {
   h1 { font-size: 3.5rem; }
   .nav-fixed { padding: 20px; }
-  .nav-links { display: none; }
+  
+  /* Di HP menu mungkin perlu disesuaikan, tapi ini basicnya */
+  .nav-links { 
+     gap: 15px;
+  }
+  .nav-item {
+     font-size: 0.8rem;
+  }
 }
