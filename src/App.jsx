@@ -1,46 +1,41 @@
+import React, { useRef, useState, useEffect } from 'react'
 import * as THREE from 'three'
 import { Canvas, useFrame } from '@react-three/fiber'
 import { Environment, ScrollControls, Scroll, useScroll, Float, ContactShadows } from '@react-three/drei'
-import { EffectComposer, Bloom, Noise } from '@react-three/postprocessing' 
-import { useRef, useState, useEffect } from 'react'
+import { EffectComposer, Bloom, Noise } from '@react-three/postprocessing'
+import './App.css'
 
-// === 1. OBJECT 3D: PINK GLASS TORUS (Dynamic Position) ===
+// === 1. OBJECT 3D: PINK GLASS TORUS (Dynamic Movement) ===
 function PinkGlass() {
   const meshRef = useRef()
   const scroll = useScroll()
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Rotasi Idle
+      // Efek Rotasi Standar
       meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.2
       meshRef.current.rotation.y += delta * 0.2
-      
-      // Rotasi saat scroll
       meshRef.current.rotation.y += scroll.delta * 5
 
-      // LOGIKA POSISI BERLAWANAN DENGAN TEKS
-      // Page 1 (offset 0.0): Teks Kiri  -> Objek Kanan (x: 2.2)
-      // Page 2 (offset 0.2): Teks Kanan -> Objek Kiri  (x: -2.2)
-      // Page 3 (offset 0.4): Teks Kiri  -> Objek Kanan (x: 2.2)
-      // Page 4 (offset 0.6): Teks Kanan -> Objek Kiri  (x: -2.2)
-      
+      // LOGIKA POSISI BERLAWANAN (PARALLAX HORIZONTAL)
       const curScroll = scroll.offset
-      let targetX = 2.2 // Default Kanan
+      let targetX = 2.2 // Default: Kanan (Halaman 1)
 
+      // Logika perpindahan berdasarkan scroll offset (0 sampai 1)
       if (curScroll > 0.16 && curScroll < 0.35) {
-        targetX = -2.2 // Pindah Kiri di Page 2 (About)
+        targetX = -2.2 // Halaman 2 (About): Teks Kanan, Objek Kiri
       } else if (curScroll > 0.35 && curScroll < 0.55) {
-        targetX = 2.2  // Pindah Kanan di Page 3 (Services)
+        targetX = 2.2  // Halaman 3 (Services): Teks Kiri, Objek Kanan
       } else if (curScroll > 0.55 && curScroll < 0.75) {
-        targetX = -2.2 // Pindah Kiri di Page 4 (Projects)
-      } else if (curScroll > 0.75) {
-        targetX = 2.2  // Pindah Kanan di sisanya
+        targetX = -2.2 // Halaman 4 (Projects): Teks Kanan, Objek Kiri
+      } else {
+        targetX = 2.2  // Sisanya di kanan
       }
 
-      // Transisi posisi yang smooth menggunakan Lerp
-      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.05)
+      // Smooth transition menggunakan lerp
+      meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.07)
       
-      // Efek melayang (bobbing)
+      // Floating effect (naik turun pelan)
       meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.15
     }
   })
@@ -70,7 +65,7 @@ const Nav = ({ darkMode, setDarkMode }) => (
     <div className="nav-links">
       <a href="#work" className="nav-item">Work</a>
       <a href="#about" className="nav-item">About</a>
-      <a href="#contact" className="nav-item" style={{color: '#ff0055', fontWeight: 'bold'}}>Say Hello</a>
+      <a href="#contact" className="nav-item" style={{color: 'var(--accent-pink)', fontWeight: 'bold'}}>Say Hello</a>
       <button 
         className="theme-toggle-btn" 
         onClick={() => setDarkMode(!darkMode)}
@@ -82,30 +77,25 @@ const Nav = ({ darkMode, setDarkMode }) => (
 )
 
 // === 3. MARQUEE COMPONENT ===
-const TechMarquee = ({ darkMode }) => (
-  <div className="marquee-container" style={{ 
-    background: darkMode ? '#111' : '#f9f9f9',
-    color: darkMode ? '#444' : '#ccc'
-  }}>
+const TechMarquee = () => (
+  <div className="marquee-container">
     <div className="marquee-content">
-      {["REACT", "NEXT.JS", "THREE.JS", "ESP32", "LARAVEL", "PYTHON", "ARDUINO", "MONGODB"].map((tech, i) => (
-        <span key={i}>{tech}</span>
+      {["REACT", "NEXT.JS", "THREE.JS", "ESP32", "LARAVEL", "PYTHON", "TAILWIND", "MONGODB"].map((t, i) => (
+        <span key={i}>{t}</span>
       ))}
       {/* Duplicate for seamless loop */}
-      {["REACT", "NEXT.JS", "THREE.JS", "ESP32"].map((tech, i) => (
-        <span key={i + 10}>{tech}</span>
+      {["REACT", "NEXT.JS", "THREE.JS", "ESP32"].map((t, i) => (
+        <span key={i + 100}>{t}</span>
       ))}
     </div>
   </div>
 )
 
 const Section = ({ children, align = 'left' }) => (
-  <section style={{
-    height: '100vh', width: '100vw', display: 'flex', alignItems: 'center',
+  <section className="section-container" style={{
     justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
-    padding: '0 10%', position: 'relative'
   }}>
-    <div style={{ width: '45%', zIndex: 10 }}>{children}</div>
+    <div className="content-box">{children}</div>
   </section>
 )
 
@@ -117,41 +107,39 @@ export default function App() {
     document.body.classList.toggle('dark-mode', darkMode)
   }, [darkMode])
 
-  const cardBg = darkMode ? 'rgba(30,30,30,0.8)' : 'rgba(255,255,255,0.6)';
-  const cardBorder = darkMode ? '1px solid #333' : '1px solid #eee';
-  const subTextColor = darkMode ? '#aaa' : '#666';
-
   return (
-    <div className={`app-wrapper ${darkMode ? 'dark' : 'light'}`}>
+    <div className="app-main">
       <Nav darkMode={darkMode} setDarkMode={setDarkMode} />
       
       <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 35 }}>
         <ambientLight intensity={darkMode ? 0.2 : 0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={darkMode ? 3 : 5} />
-        <spotLight position={[-10, -5, -5]} intensity={5} color={darkMode ? "#4444ff" : "#ffccdd"} />
-        <Environment preset="city" environmentIntensity={darkMode ? 0.5 : 1} /> 
+        <spotLight position={[-10, -5, -5]} intensity={darkMode ? 2 : 5} color={darkMode ? "#4444ff" : "#ffccdd"} />
+        <Environment preset="city" environmentIntensity={darkMode ? 0.4 : 1} /> 
 
         <ScrollControls pages={6} damping={0.2}>
           <PinkGlass />
-          <ContactShadows position={[0, -2, 0]} opacity={0.5} scale={10} blur={2} far={4} color={darkMode ? "#000" : "#ff0055"} />
+          <ContactShadows position={[0, -2, 0]} opacity={0.5} scale={10} blur={2.5} far={4} color={darkMode ? "#000" : "#ff0055"} />
 
           <Scroll html style={{ width: '100%' }}>
             {/* PAGE 1: HERO */}
             <Section align="left">
-              <h3 className="overline">2025 Portfolio</h3>
+              <h3>2025 Portfolio</h3>
               <h1>Fullstack<br/><span className="text-pink">Creative.</span></h1>
-              <p className="desc">Saya Kevin Wijaya. Menggabungkan logika teknis dengan estetika visual untuk membangun web experience yang modern.</p>
+              <p className="desc">
+                Saya Kevin Wijaya. Menggabungkan logika teknis dengan estetika visual untuk membangun web experience yang modern.
+              </p>
               <button className="btn-modern">EXPLORE WORK</button>
             </Section>
 
-            {/* MARQUEE POSITIONED BETWEEN SECTIONS */}
+            {/* MARQUEE */}
             <div style={{ position: 'absolute', top: '100vh', width: '100%' }}>
-               <TechMarquee darkMode={darkMode} />
+               <TechMarquee />
             </div>
 
-            {/* PAGE 2: ABOUT (Teks Kanan, Objek bakal di Kiri) */}
+            {/* PAGE 2: ABOUT */}
             <Section align="right">
-              <h3 className="overline">The Developer</h3>
+              <h3>The Developer</h3>
               <h2>Code driven by <br/><span className="text-pink">Design.</span></h2>
               <p className="desc">
                 Mahasiswa IT Semester 5. Spesialisasi saya menjembatani gap antara 
@@ -161,37 +149,37 @@ export default function App() {
 
             {/* PAGE 3: SERVICES */}
             <Section align="left">
-              <h3 className="overline">What I Do</h3>
-              <div className="grid-services">
-                <div className="card" style={{ background: cardBg, border: cardBorder }}>
+              <h3>What I Do</h3>
+              <div className="services-grid">
+                <div className="card-glass">
                   <h4>🌐 Web Dev</h4>
-                  <p style={{ color: subTextColor }}>React, Next.js, & Three.js animations.</p>
+                  <p>React, Next.js, dan animasi Three.js interaktif.</p>
                 </div>
-                <div className="card" style={{ background: cardBg, border: cardBorder }}>
+                <div className="card-glass">
                   <h4>🤖 IoT</h4>
-                  <p style={{ color: subTextColor }}>ESP32, Sensors, & Real-time dashboards.</p>
+                  <p>Integrasi sensor ESP32 ke dashboard real-time.</p>
                 </div>
-                <div className="card" style={{ background: cardBg, border: cardBorder }}>
+                <div className="card-glass">
                   <h4>⚙️ Backend</h4>
-                  <p style={{ color: subTextColor }}>Scalable APIs with Laravel & Python.</p>
+                  <p>API aman & scalable pake Laravel atau Python.</p>
                 </div>
-                <div className="card" style={{ background: cardBg, border: cardBorder }}>
+                <div className="card-glass">
                   <h4>📱 UI/UX</h4>
-                  <p style={{ color: subTextColor }}>Pixel-perfect Figma to Code.</p>
+                  <p>Implementasi desain Figma ke kode pixel-perfect.</p>
                 </div>
               </div>
             </Section>
 
-            {/* PAGE 4: PROJECT LIST (Teks Kanan) */}
+            {/* PAGE 4: PROJECT LIST */}
             <Section align="right">
-              <h3 className="overline">Selected Works</h3>
-              <div className="project-list">
+              <h3>Selected Works</h3>
+              <div className="project-container">
                 <div className="project-row">
-                  <div><div className="p-title">Glass Portfolio</div><div style={{color: subTextColor}}>React Three Fiber</div></div>
+                  <div><div className="p-title">Glass Portfolio</div><div className="p-sub">React Three Fiber</div></div>
                   <div className="p-cat">WEBGL</div>
                 </div>
                 <div className="project-row">
-                  <div><div className="p-title">Smart Home Hub</div><div style={{color: subTextColor}}>ESP32 & Next.js</div></div>
+                  <div><div className="p-title">Smart Home Hub</div><div className="p-sub">ESP32 & Next.js</div></div>
                   <div className="p-cat">IOT</div>
                 </div>
               </div>
@@ -199,32 +187,25 @@ export default function App() {
 
             {/* PAGE 5: EXPERIENCE */}
             <Section align="left">
-               <h3 className="overline">Experience</h3>
-               <div className="timeline" style={{ borderLeft: darkMode ? '2px solid #333' : '2px solid #eee' }}>
+               <h3>Experience</h3>
+               <div className="timeline-container">
                  <div className="timeline-item">
-                   <div className="dot"></div>
-                   <h4>Fullstack Developer Intern</h4>
-                   <p className="date">PT. Teknologi Maju • 2024</p>
-                   <p style={{ color: subTextColor }}>Membangun dashboard internal menggunakan Laravel & React.</p>
-                 </div>
-                 <div className="timeline-item">
-                   <div className="dot gray"></div>
-                   <h4>IoT Project Lead</h4>
-                   <p className="date">Politeknik Negeri • 2023</p>
-                   <p style={{ color: subTextColor }}>Smart Farming berbasis ESP32 - Juara 2 Nasional.</p>
+                   <div className="timeline-dot"></div>
+                   <h4 className="exp-title">Fullstack Developer Intern</h4>
+                   <p className="exp-comp">PT. Teknologi Maju • 2024</p>
+                   <p className="exp-desc">Membangun dashboard internal perusahaan menggunakan Laravel dan React.</p>
                  </div>
                </div>
             </Section>
 
             {/* PAGE 6: CONTACT */}
             <Section align="left">
-              <h3 className="overline">Collaboration</h3>
-              <h1 className="huge-text">Let's build<br/>Future.</h1>
+              <h3>Collaboration</h3>
+              <h1 className="contact-title">Let's build<br/>Future.</h1>
               <a href="mailto:kevindowi@gmail.com" className="email-link">
                 kevindowi@gmail.com
               </a>
             </Section>
-
           </Scroll>
         </ScrollControls>
 
