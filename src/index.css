@@ -28,11 +28,11 @@ body.dark-mode {
 * { box-sizing: border-box; margin: 0; padding: 0; }
 
 body, html, #root {
-  width: 100%; height: 100%;
+  width: 100%; min-height: 100vh;
   background-color: var(--bg-color);
   color: var(--text-primary);
   font-family: 'Outfit', sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
   transition: background-color 0.5s ease;
 }
 
@@ -40,20 +40,42 @@ body, html, #root {
 .nav-fixed {
   position: fixed; top: 0; left: 0; width: 100%;
   padding: 25px 50px; display: flex; justify-content: space-between;
-  align-items: center; z-index: 100;
+  align-items: center; z-index: 1000; /* Harus di atas segalanya */
   background: var(--nav-bg); backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--glass-border);
 }
 
 .logo { font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.4rem; color: var(--text-primary); text-decoration: none; }
 .nav-links { display: flex; gap: 30px; align-items: center; }
-.nav-item { color: var(--text-primary); text-decoration: none; font-weight: 500; }
-.theme-toggle-btn { background: transparent; border: 1px solid var(--border-line); color: var(--text-primary); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; }
+.nav-item { color: var(--text-primary); text-decoration: none; font-weight: 500; font-size: 0.95rem; }
+.theme-toggle-btn { background: transparent; border: 1px solid var(--border-line); color: var(--text-primary); width: 40px; height: 40px; border-radius: 50%; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 1.1rem; transition: 0.3s; }
+.theme-toggle-btn:hover { border-color: var(--accent-pink); transform: rotate(15deg); }
+
+/* CONTENT WRAPPER */
+.scroll-inner {
+  width: 100vw;
+  position: relative;
+}
+
+.section-container {
+  height: 100vh; 
+  width: 100vw; 
+  display: flex; 
+  align-items: center; 
+  padding: 0 10%;
+  position: relative;
+  z-index: 10; /* Di atas canvas */
+}
+
+.content-box { 
+  width: 45%; 
+  pointer-events: auto; /* Biar tombol bisa diklik */
+}
 
 /* TYPOGRAPHY */
-h1 { font-family: 'Space Grotesk'; font-weight: 700; font-size: 5.5rem; line-height: 1; letter-spacing: -2.5px; margin-bottom: 20px; }
-h2 { font-family: 'Space Grotesk'; font-weight: 500; font-size: 3rem; margin-bottom: 1.5rem; }
-h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-pink); margin-bottom: 1rem; }
+h1 { font-family: 'Space Grotesk'; font-weight: 700; font-size: 5.5rem; line-height: 1; letter-spacing: -2.5px; margin-bottom: 20px; color: var(--text-primary); }
+h2 { font-family: 'Space Grotesk'; font-weight: 500; font-size: 3rem; margin-bottom: 1.5rem; color: var(--text-primary); }
+h3 { font-size: 0.85rem; text-transform: uppercase; letter-spacing: 2px; color: var(--accent-pink); margin-bottom: 1rem; font-weight: 600; }
 .text-pink { color: var(--accent-pink); }
 
 p.desc {
@@ -61,32 +83,33 @@ p.desc {
   background: var(--glass-bg); border: 1px solid var(--glass-border);
   color: var(--glass-text); backdrop-filter: blur(8px);
   padding: 20px; border-radius: 12px; margin-top: 20px;
+  font-weight: 500; box-shadow: 0 4px 20px rgba(0,0,0,0.05);
 }
-
-/* LAYOUT */
-.scroll-wrapper { width: 100%; }
-.section-container {
-  height: 100vh; width: 100vw; display: flex; align-items: center; padding: 0 10%;
-}
-.content-box { width: 45%; z-index: 10; pointer-events: auto; }
 
 /* COMPONENTS */
 .services-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 20px; }
 .card-glass { background: var(--glass-bg); border: 1px solid var(--glass-border); padding: 25px; border-radius: 12px; backdrop-filter: blur(8px); }
-.project-row { border-bottom: 1px solid var(--border-line); padding: 35px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
+.card-glass h4 { margin-bottom: 8px; font-family: 'Space Grotesk'; }
+.card-glass p { font-size: 0.9rem; color: var(--text-secondary); }
+
+.project-container { width: 100%; margin-top: 30px; }
+.project-row { border-bottom: 1px solid var(--border-line); padding: 35px 0; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.3s; }
+.project-row:hover { padding-left: 15px; border-bottom-color: var(--accent-pink); }
 .p-title { font-family: 'Space Grotesk'; font-size: 2.2rem; color: var(--text-primary); }
-.p-cat { font-size: 0.85rem; color: var(--text-secondary); background: var(--tag-bg); padding: 6px 12px; border-radius: 6px; }
+.p-sub { color: var(--text-secondary); font-size: 0.9rem; }
+.p-cat { font-size: 0.85rem; color: var(--text-secondary); background: var(--tag-bg); padding: 6px 12px; border-radius: 6px; border: 1px solid var(--glass-border); }
 
 .timeline-container { border-left: 2px solid var(--border-line); padding-left: 30px; margin-top: 30px; }
 .timeline-item { position: relative; margin-bottom: 40px; }
 .timeline-dot { position: absolute; left: -36px; top: 8px; width: 12px; height: 12px; background: var(--accent-pink); border-radius: 50%; }
+.exp-title { font-size: 1.4rem; font-family: 'Space Grotesk'; color: var(--text-primary); }
+.exp-comp { color: var(--accent-pink); font-weight: 600; font-size: 0.9rem; margin-top: 4px; }
+.exp-desc { color: var(--text-secondary); margin-top: 8px; font-size: 0.95rem; }
 
-.btn-modern { margin-top: 30px; padding: 16px 32px; background: var(--text-primary); color: var(--bg-color); border: none; border-radius: 8px; font-family: 'Space Grotesk'; cursor: pointer; }
-.email-link { font-family: 'Space Grotesk'; font-size: 2.5rem; color: var(--text-primary); text-decoration: none; border-bottom: 3px solid var(--accent-pink); font-weight: 700; }
+.btn-modern { margin-top: 30px; padding: 16px 32px; background: var(--text-primary); color: var(--bg-color); border: none; border-radius: 8px; font-family: 'Space Grotesk'; cursor: pointer; transition: 0.3s; font-weight: 500; }
+.btn-modern:hover { background: var(--accent-pink); color: white; transform: translateY(-2px); box-shadow: 0 10px 25px rgba(255, 0, 85, 0.25); }
 
-/* MARQUEE */
-.marquee-container { width: 100%; overflow: hidden; padding: 40px 0; background: var(--tag-bg); border-y: 1px solid var(--border-line); }
-.marquee-content { display: flex; gap: 60px; animation: marquee-scroll 30s linear infinite; font-family: 'Space Grotesk'; font-weight: 700; font-size: 2rem; color: var(--text-secondary); opacity: 0.4; }
-@keyframes marquee-scroll { 0% { transform: translateX(0); } 100% { transform: translateX(-50%); } }
+.email-link { font-family: 'Space Grotesk'; font-size: 2.5rem; color: var(--text-primary); text-decoration: none; border-bottom: 3px solid var(--accent-pink); font-weight: 700; transition: 0.3s; display: inline-block; margin-top: 20px; }
+.email-link:hover { color: var(--accent-pink); }
 
-@media (max-width: 768px) { h1 { font-size: 3rem; } .content-box { width: 85%; } }
+@media (max-width: 768px) { h1 { font-size: 3.5rem; } .content-box { width: 85%; } .nav-fixed { padding: 20px; } }
