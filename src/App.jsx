@@ -5,34 +5,29 @@ import { Environment, ScrollControls, Scroll, useScroll, Float, ContactShadows }
 import { EffectComposer, Bloom, Noise } from '@react-three/postprocessing'
 import './index.css'
 
-// === 1. OBJECT 3D: PINK GLASS TORUS (Dynamic Side-Switching) ===
 function PinkGlass() {
   const meshRef = useRef()
   const scroll = useScroll()
 
   useFrame((state, delta) => {
     if (meshRef.current) {
-      // Efek Rotasi Idle
       meshRef.current.rotation.x = Math.sin(state.clock.elapsedTime * 0.2) * 0.2
       meshRef.current.rotation.y += delta * 0.2
       meshRef.current.rotation.y += scroll.delta * 5
 
-      // LOGIKA POSISI BERLAWANAN DENGAN TEKS
       const curScroll = scroll.offset
-      let targetX = 2.2 // Default: Kanan (Halaman 1)
+      let targetX = 2.2 
 
-      // Perpindahan posisi berdasarkan progress scroll
       if (curScroll > 0.16 && curScroll < 0.35) {
-        targetX = -2.2 // Halaman 2 (About): Teks di Kanan, Objek di Kiri
+        targetX = -2.2 // Page 2 (About) -> Pindah Kiri
       } else if (curScroll > 0.35 && curScroll < 0.55) {
-        targetX = 2.2  // Halaman 3 (Services): Teks di Kiri, Objek di Kanan
+        targetX = 2.2  // Page 3 (Services) -> Pindah Kanan
       } else if (curScroll > 0.55 && curScroll < 0.75) {
-        targetX = -2.2 // Halaman 4 (Projects): Teks di Kanan, Objek di Kiri
+        targetX = -2.2 // Page 4 (Projects) -> Pindah Kiri
       } else {
         targetX = 2.2  
       }
 
-      // Transisi smooth menggunakan Lerp
       meshRef.current.position.x = THREE.MathUtils.lerp(meshRef.current.position.x, targetX, 0.07)
       meshRef.current.position.y = Math.sin(state.clock.elapsedTime * 0.5) * 0.15
     }
@@ -56,7 +51,6 @@ function PinkGlass() {
   )
 }
 
-// === 2. NAVBAR COMPONENT ===
 const Nav = ({ darkMode, setDarkMode }) => (
   <nav className="nav-fixed">
     <a href="#" className="logo">KEVIN.</a>
@@ -71,20 +65,6 @@ const Nav = ({ darkMode, setDarkMode }) => (
   </nav>
 )
 
-// === 3. MARQUEE COMPONENT ===
-const TechMarquee = () => (
-  <div className="marquee-container">
-    <div className="marquee-content">
-      {["REACT", "NEXT.JS", "THREE.JS", "ESP32", "LARAVEL", "PYTHON", "TAILWIND", "MONGODB"].map((t, i) => (
-        <span key={i}>{t}</span>
-      ))}
-      {["REACT", "NEXT.JS", "THREE.JS", "ESP32"].map((t, i) => (
-        <span key={i + 100}>{t}</span>
-      ))}
-    </div>
-  </div>
-)
-
 const Section = ({ children, align = 'left' }) => (
   <section className="section-container" style={{
     justifyContent: align === 'right' ? 'flex-end' : 'flex-start',
@@ -93,7 +73,6 @@ const Section = ({ children, align = 'left' }) => (
   </section>
 )
 
-// === 4. MAIN APP ===
 export default function App() {
   const [darkMode, setDarkMode] = useState(false)
 
@@ -105,27 +84,33 @@ export default function App() {
     <div className="app-main">
       <Nav darkMode={darkMode} setDarkMode={setDarkMode} />
       
-      <Canvas dpr={[1, 2]} camera={{ position: [0, 0, 7], fov: 35 }}>
+      {/* PENTING: Canvas harus punya style top:0 left:0 
+          agar tidak menggeser konten HTML 
+      */}
+      <Canvas 
+        shadows 
+        camera={{ position: [0, 0, 7], fov: 35 }}
+        style={{ position: 'fixed', top: 0, left: 0, zIndex: 0 }}
+      >
         <ambientLight intensity={darkMode ? 0.2 : 0.5} />
         <spotLight position={[10, 10, 10]} angle={0.15} penumbra={1} intensity={darkMode ? 3 : 5} />
         <Environment preset="city" environmentIntensity={darkMode ? 0.4 : 1} /> 
 
         <ScrollControls pages={6} damping={0.2}>
-          {/* Elemen 3D */}
           <PinkGlass />
           <ContactShadows position={[0, -2, 0]} opacity={0.5} scale={10} blur={2.5} far={4} color={darkMode ? "#000" : "#ff0055"} />
 
-          {/* Elemen HTML Scroll */}
-          <Scroll html style={{ width: '100vw' }}>
-            <div className="scroll-wrapper">
+          {/* Bungkus semua teks di dalam Scroll html 
+          */}
+          <Scroll html>
+            <main className="scroll-inner">
+              
               <Section align="left">
                 <h3>2025 Portfolio</h3>
                 <h1>Fullstack<br/><span className="text-pink">Creative.</span></h1>
                 <p className="desc">Saya Kevin Wijaya. Menggabungkan logika teknis dengan estetika visual untuk membangun web experience yang modern.</p>
                 <button className="btn-modern">EXPLORE WORK</button>
               </Section>
-
-              <div style={{ height: '10vh' }}><TechMarquee /></div>
 
               <Section align="right">
                 <h3>The Developer</h3>
@@ -168,7 +153,8 @@ export default function App() {
                 <h1 style={{fontSize: '4.5rem'}}>Let's build<br/>Future.</h1>
                 <a href="mailto:kevindowi@gmail.com" className="email-link">kevindowi@gmail.com</a>
               </Section>
-            </div>
+
+            </main>
           </Scroll>
         </ScrollControls>
 
