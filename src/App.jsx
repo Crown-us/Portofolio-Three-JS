@@ -184,7 +184,7 @@ export default function App() {
               <Section align="left">
                 <h3>Collaboration</h3>
                 <h1 style={{ fontSize: '4.5rem' }}>Let's build<br/>Future.</h1>
-                <a href="mailto:kevindowi@gmail.com" className="email-link">kevindowi@gmail.com</a>
+                <a href="mailto:kevindowi@gmail.com" className="email-link">wijaya.kevinn@gmail.com</a>
               </Section>
 
             </main>
